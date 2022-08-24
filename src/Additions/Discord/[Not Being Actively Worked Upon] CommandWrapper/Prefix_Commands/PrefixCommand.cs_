@@ -1,0 +1,56 @@
+using Discord;
+using Discord.WebSocket;
+
+namespace Masked.Discord.Commands;
+
+public class PrefixCommand : ICommand
+{
+    private List<CommandParameter> commandParameters;
+    private string _commandName;
+
+    // Hide Constructor.
+    private PrefixCommand()
+    { }
+    public CommandType GetCommandType()
+        => CommandType.Prefix;
+    public string GetCommandName()
+        => _commandName;
+
+    public void AddCommandParameter(string nameOfParameter, Type typeOfParameter, Int32 positionOfParameter)
+    {
+        if (typeOfParameter == typeof(Int16)
+            || typeOfParameter == typeof(Int32)
+            || typeOfParameter == typeof(Int64)
+            || typeOfParameter == typeof(Char)
+            || typeOfParameter == typeof(Boolean)
+            || typeOfParameter == typeof(String))
+        {
+            if (commandParameters.DistinctBy(x => x.parameterPosition == positionOfParameter).Any())
+            {
+                CommandParameter prefixParameter = commandParameters.DistinctBy(x => x.parameterPosition == positionOfParameter).First();
+
+                throw new Exception(
+                    $"Can not add parameter for position {positionOfParameter} for parameter of type {typeOfParameter.FullName} with name {nameOfParameter}, as the position is already held by a parameter of type {prefixParameter.parameterType} with name {prefixParameter.parameterName}."
+                    );
+            }
+            commandParameters.Add(new()
+            {
+                parameterName = nameOfParameter,
+                parameterPosition = positionOfParameter,
+                parameterType = typeOfParameter
+            });
+        }
+    }
+    public List<CommandParameter> GetParameters()
+        => commandParameters;
+
+    /// <summary>
+    /// Ran when the command is received
+    /// </summary>
+    /// <param name="commandSocket">The slash command (DNet Implementation) class containing data of the command</param>
+    /// <returns></returns>
+    public virtual async Task OnCommandReceived(SocketSlashCommand commandSocket)
+    {
+
+    }
+}

@@ -1,0 +1,7 @@
+namespace Masked.Discord.Commands;
+
+public enum CommandType
+{
+    Prefix = 0,
+    Slash = 1
+}

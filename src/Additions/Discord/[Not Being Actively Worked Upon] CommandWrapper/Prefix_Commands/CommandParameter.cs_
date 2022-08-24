@@ -1,0 +1,36 @@
+using System.Reflection.Metadata;
+
+namespace Masked.Discord.Commands;
+
+public struct CommandParameter
+{
+    bool hasValue = false;
+    public string parameterName { get; init; }
+    public Type parameterType { get; init; }
+    public Int32 parameterPosition { get; init; }
+    private object? parameterContent { get; init; }
+    public CommandParameter(string parameterName, Type parameterType, Int32 parameterPosition, object parameterContent)
+    {
+        this.parameterName = parameterName;
+        this.parameterType = parameterType;
+        this.parameterPosition = parameterPosition;
+        this.parameterContent = parameterContent;
+        hasValue = true;
+    }
+    public CommandParameter(string parameterName, Type parameterType, Int32 parameterPosition)
+    {
+        this.parameterName = parameterName;
+        this.parameterType = parameterType;
+        this.parameterPosition = parameterPosition;
+        this.parameterContent = null!;
+    }
+    public Object? GetUnderlyingValue()
+    {
+        if (hasValue)
+            return parameterContent;
+        else
+            throw new NullReferenceException("There is no value on the parameter, have you checked using CommandParameter.HasValue() before trying to access to the value?");
+    }
+    public bool HasValue()
+        => hasValue;
+}
