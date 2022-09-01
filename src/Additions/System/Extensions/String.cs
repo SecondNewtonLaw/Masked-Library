@@ -33,4 +33,19 @@ public static class StringExt
 
         return result.ToString();
     }
+    /// <summary>
+    /// Checks a string in search of characters in it.
+    /// </summary>
+    /// <param name="str">The string instance.</param>
+    /// <param name="chars">The collection of characters that are to be checked for.</param>
+    /// <returns>A True if the string contains any of the characters in the collection</returns>
+    public static async Task<bool> Contains(this string str, ICollection<char> chars)
+    {
+        for (int i = 0; i < str.Length; i++)
+        {
+            if (chars.Contains(str[i]))
+                return true;
+        }
+        return false;
+    }
 }
