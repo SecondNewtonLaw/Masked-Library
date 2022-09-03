@@ -20,7 +20,7 @@ public class DownloadBar
         {
             SslProtocols = SslProtocols.Tls12,
             UseCookies = false,
-            AutomaticDecompression = DecompressionMethods.Brotli,
+            AutomaticDecompression = DecompressionMethods.All,
         });
     }
     public DownloadBar(HttpClient httpClient) { _internalHttpClient = httpClient; }
