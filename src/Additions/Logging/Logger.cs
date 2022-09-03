@@ -38,13 +38,13 @@ internal sealed class Logger
 
                 StreamWriter swrite = File.AppendText(_logPath);
                 await swrite.WriteLineAsync(
-                    $"[Thread N{origin.ManagedThreadId}] [Origin: {inner}] [{GetLogLevel(logLevel)}] PID: {Environment.ProcessId}: {logText.Split('\n').Last().ReplaceLineEndings("")}"
-                );
-                await swrite.FlushAsync();
+                    string.Format("[Thread N{0}] [Origin: {1}] [{2}] PID: {3}: {4}", origin.ManagedThreadId, inner, GetLogLevel(logLevel), Environment.ProcessId, logText.Split('\n')[^1].ReplaceLineEndings(""))
+                ).ConfigureAwait(continueOnCapturedContext: false);
+                await swrite.FlushAsync().ConfigureAwait(continueOnCapturedContext: false);
                 swrite.Close();
-                await swrite.DisposeAsync();
+                await swrite.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
             }, token));
-        }, token);
+        }, token).ConfigureAwait(continueOnCapturedContext: false);
     }
     private void WorkerCode()
     {
@@ -74,28 +74,16 @@ internal sealed class Logger
     {
         if (lvl is LogLevel.Information)
             return "I";
-        else if (lvl is LogLevel.Warning)
+
+        if (lvl is LogLevel.Warning)
             return "W";
-        else if (lvl is LogLevel.Error)
+
+        if (lvl is LogLevel.Error)
             return "E";
-        else return (lvl is LogLevel.Verbose) ? "V" : "D";
+
+        return (lvl is LogLevel.Verbose) ? "V" : "D";
     }
     // Private Ctor
     private Logger()
     { }
-}
-
-public enum LogLevel
-{
-    Information = 0,
-    Warning = 1,
-    Error = 2,
-    Debug = 3,
-    Verbose = 4
-}
-public enum WorkerStatus
-{
-    Working,
-    Crashed,
-    Idle
 }

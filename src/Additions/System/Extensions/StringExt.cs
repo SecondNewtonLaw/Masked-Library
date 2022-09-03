@@ -41,7 +41,7 @@ public static class StringExt
     /// <returns>A True if the string contains any of the characters in the collection</returns>
     public static async Task<bool> Contains(this string str, ICollection<char> chars)
     {
-        Task<bool> Assertion = new Task<bool>(() =>
+        Task<bool> Assertion = new(() =>
         {
             for (int i = 0; i < str.Length; i++)
             {
@@ -51,7 +51,7 @@ public static class StringExt
             return false;
         });
         Assertion.Start();
-        return await Assertion;
+        return await Assertion.ConfigureAwait(false);
     }
     /// <summary>
     /// Checks an array of strings in search a string in it.
@@ -60,10 +60,9 @@ public static class StringExt
     /// <param name="target">The string that should be checked for.</param>
     /// <param name="comparer">The comparer that should be used when comparing the strings.</param>
     /// <returns>A True if the string[] contains the string</returns>
-
     public static async Task<bool> Contains(this string[] strArr, string target, StringComparison comparer = StringComparison.CurrentCulture)
     {
-        Task<bool> Assertion = new Task<bool>(() =>
+        Task<bool> Assertion = new(() =>
         {
             for (int i = 0; i < strArr.Length; i++)
             {
@@ -73,6 +72,6 @@ public static class StringExt
             return false;
         });
         Assertion.Start();
-        return await Assertion;
+        return await Assertion.ConfigureAwait(false);
     }
 }

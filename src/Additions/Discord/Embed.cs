@@ -16,7 +16,7 @@ public static class EmbedAdditions
         {
             Name = authorName,
             Url = authorUrl.AbsoluteUri,
-            IconUrl = authorIcon.AbsoluteUri
+            IconUrl = authorIcon.AbsoluteUri,
         }.Build();
     }
 }

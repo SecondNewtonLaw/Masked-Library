@@ -20,29 +20,29 @@ public class DownloadBar
         {
             SslProtocols = SslProtocols.Tls12,
             UseCookies = false,
-            AutomaticDecompression = DecompressionMethods.Brotli
+            AutomaticDecompression = DecompressionMethods.Brotli,
         });
     }
     public DownloadBar(HttpClient httpClient) { _internalHttpClient = httpClient; }
-    public async Task<Dictionary<Stream, DownloadBarItem>> StartDownloadBar(List<DownloadBarItem> urlList)
+    public async Task<IDictionary<Stream, DownloadBarItem>> StartDownloadBar(IEnumerable<DownloadBarItem> urlList)
     {
         Dictionary<HttpResponseMessage, DownloadBarItem> streamTracker = new();
 
-        for (int i = 0; i < urlList.Count; i++)
+        for (int i = 0; urlList.Skip(i).Any(); i++)
         {
             int iter = i;
             streamTracker.Add(
-                await _internalHttpClient.GetAsync(urlList[iter].url, HttpCompletionOption.ResponseHeadersRead),
-                    urlList[i]
+                await _internalHttpClient.GetAsync(urlList.ElementAt(iter).Url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false),
+                    urlList.ElementAt(i)
                 );
         }
 
         Dictionary<Stream, DownloadBarItem> FinalizedDownloads = new();
 
         await AnsiConsole.Progress()
-            .AutoRefresh(true) // Turn off auto refresh
-            .AutoClear(false)   // Do not remove the task list when done
-            .HideCompleted(false)   // Hide tasks as they are completed
+            .AutoRefresh(enabled: true) // Turn off auto refresh
+            .AutoClear(enabled: false)   // Do not remove the task list when done
+            .HideCompleted(enabled: false)   // Hide tasks as they are completed
             .StartAsync(async ctx =>
             {
                 List<ProgressTask> progTasks = new();
@@ -53,28 +53,28 @@ public class DownloadBar
                 for (int i = 0; i < streamTracker.Count; i++)
                 {
                     int currIterator = i;
-                    string dlName = urlList[i].itemName.RemoveMarkup();
+                    string dlName = urlList.ElementAt(i).ItemName.RemoveMarkup();
                     double contentLength = (double)streamTracker.ElementAt(i).Key.Content.Headers.ContentLength!;
                     progTasks.Add(
                         ctx.AddTask(
-                            $"[green]Downloading [yellow bold]{dlName}[/]...[/]",
-                            true,
-                            contentLength
+                            description: $"[green]Downloading [yellow bold]{dlName}[/]...[/]",
+                            autoStart: true,
+                            maxValue: contentLength
                         )
                     );
 
                     Thread thread = new(async () =>
                     {
-                        Stream httpStream = await streamTracker.ElementAt(currIterator).Key.Content.ReadAsStreamAsync();
-                        Stream finished = File.Create(streamTracker.ElementAt(currIterator).Value.savePath);
+                        Stream httpStream = await streamTracker.ElementAt(currIterator).Key.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                        Stream finished = File.Create(streamTracker.ElementAt(currIterator).Value.SavePath);
                         int readData = 0, lastRead = 0;
                         byte[] buffer = new byte[chunkSize];
 
                         do
                         {
-                            lastRead = await httpStream.ReadAsync(buffer.AsMemory(0, chunkSize));
+                            lastRead = await httpStream.ReadAsync(buffer.AsMemory(0, chunkSize)).ConfigureAwait(false);
 
-                            await finished.WriteAsync(buffer.AsMemory(0, lastRead));
+                            await finished.WriteAsync(buffer.AsMemory(0, lastRead)).ConfigureAwait(false);
 
                             readData += lastRead;
 
@@ -82,9 +82,9 @@ public class DownloadBar
                         }
                         while (readData < contentLength);
 
-                        await finished.FlushAsync(); // Save all data to file
+                        await finished.FlushAsync().ConfigureAwait(false); // Save all data to file
 
-                        FinalizedDownloads.Add(finished, urlList[currIterator]);
+                        FinalizedDownloads.Add(finished, urlList.ElementAt(currIterator));
                     });
                     thread.Start();
                     threadList.Add(thread);
@@ -96,17 +96,10 @@ public class DownloadBar
                     // update each task simultaneously and then return them to a stream, 
                     // to do it, run EVERY thread separately in their own drill,
                     // the while is only used to retain the progress of ending..
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
-            });
+            }).ConfigureAwait(false);
 
         return FinalizedDownloads;
     }
-}
-public struct DownloadBarItem
-{
-    public DownloadBarItem(Uri url, string itemName, string savePath) { this.url = url; this.itemName = itemName; this.savePath = savePath; }
-    public Uri url { get; init; }
-    public string itemName { get; init; }
-    public string savePath { get; init; }
 }
