@@ -1,6 +1,0 @@
-using Discord;
-
-namespace Masked.Discord.Commands;
-
-public static class CommandManager
-{ }
