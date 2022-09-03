@@ -29,7 +29,7 @@ public static class StringExt
                     tken,
                     TaskCreationOptions.PreferFairness,
                     TaskScheduler.Default
-                )).ToArray());
+                ).ConfigureAwait(false)).ToArray());
 
         return result.ToString();
     }
@@ -49,6 +49,28 @@ public static class StringExt
                     return true;
             }
             return false;
-        });
+        }).ConfigureAwait(false);
+    }
+    /// <summary>
+    /// Checks an array of strings in search a string in it.
+    /// </summary>
+    /// <param name="strArr">The string[] instance.</param>
+    /// <param name="target">The string that should be checked for.</param>
+    /// <param name="comparer">The comparer that should be used when comparing the strings.</param>
+    /// <returns>A True if the string[] contains the string</returns>
+
+    public static async Task<bool> Contains(this string[] strArr, string target, StringComparison comparer = StringComparison.CurrentCulture)
+    {
+        return await new Task<bool>(() =>
+        {
+            for (int i = 0; i < strArr.Length; i++)
+            {
+                if (strArr[i].Contains(target, comparer))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }).ConfigureAwait(false);
     }
 }
