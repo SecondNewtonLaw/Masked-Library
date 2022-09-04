@@ -79,8 +79,7 @@ public class CommandHelper
             Description = "A command used to build the other commands of the bot",
         };
 
-        Func<SocketSlashCommand, Task> buildCommandLogic =
-        async sock =>
+        async Task buildCommandLogic(SocketSlashCommand sock)
         {
             await sock.DeferAsync().ConfigureAwait(false);
             RestFollowupMessage msg = await sock.FollowupAsync("**[Dev command]** `Building slash commands for this guild remotely...`").ConfigureAwait(false);
@@ -90,7 +89,7 @@ public class CommandHelper
 
             await msg.ModifyAsync(x => x.Content = "**[Dev Command]** `Commands Built.`").ConfigureAwait(false);
             // End.
-        };
+        }
         AddToCommandList(buildCommand.Build(), buildCommandLogic);
         await guild.CreateApplicationCommandAsync(buildCommand.Build()).ConfigureAwait(false);
     }
