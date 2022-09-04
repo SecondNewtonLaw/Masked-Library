@@ -11,7 +11,6 @@ public static class StringExt
     /// <returns>a string containing the collection of characters as a string</returns>
     public static string AssembleToString<Type>(this Type chars) where Type : IEnumerable<char>
         => string.Join("", chars);
-
     /// <summary>
     /// Removes characters from a string asynchronously
     /// </summary>
@@ -74,4 +73,11 @@ public static class StringExt
         Assertion.Start();
         return await Assertion.ConfigureAwait(false);
     }
+    /// <summary>
+    /// Verify wether or not the string is a Base64 string
+    /// </summary>
+    /// <param name="str">String Instance</param>
+    /// <returns>True if it is a Base64 string</returns>
+    public static async Task<bool> IsBase64(this string str)
+        => await Task.Run(() => Convert.TryFromBase64String(str, new(), out _)).ConfigureAwait(false);
 }
