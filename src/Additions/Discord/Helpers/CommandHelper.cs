@@ -68,7 +68,9 @@ public class CommandHelper
         };
     }
     /// <summary>
-    /// Submits a command that triggers a command building for the guild the command was executed in. The Handler received from GetSlashCommandHandler() MUST be set
+    /// Submits a command that triggers a command building for the guild the command was executed in.
+    /// The Handler received from GetSlashCommandHandler() MUST be set
+    /// If the command already exists remotely, it will register it to the command handler.
     /// </summary>
     /// <returns>A Task representing the running operation.</returns>
     public async Task SubmitCommandBuilder(SocketGuild guild)
@@ -91,6 +93,9 @@ public class CommandHelper
             // End.
         }
         AddToCommandList(buildCommand.Build(), buildCommandLogic);
-        await guild.CreateApplicationCommandAsync(buildCommand.Build()).ConfigureAwait(false);
+
+        // Only submit IF it doesn't exist in the server already
+        if (!(await guild.GetApplicationCommandsAsync().ConfigureAwait(false)).Any(x => string.Equals(x.Name, buildCommand.Name, StringComparison.Ordinal)))
+            await guild.CreateApplicationCommandAsync(buildCommand.Build()).ConfigureAwait(false);
     }
 }
