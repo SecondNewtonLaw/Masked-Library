@@ -95,7 +95,7 @@ public class DownloadBar
                     // Using Multi-Threading, 
                     // update each task simultaneously and then return them to a stream, 
                     // to do it, run EVERY thread separately in their own drill,
-                    // the while is only used to retain the progress of ending..
+                    // the while is only used to retain the progress of ending.
                     await Task.Delay(100).ConfigureAwait(false);
                 }
             }).ConfigureAwait(false);

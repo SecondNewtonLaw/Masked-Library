@@ -13,16 +13,18 @@ namespace Masked.Logging;
 internal sealed class Logger
 {
     private WorkerStatus LoggerStatus;
-    private readonly static string _logFolder = $"{Environment.CurrentDirectory}/Logs/";
-    private readonly static string _logPath = $"{_logFolder}log.log";
+    private static readonly string _logFolder = $"{Environment.CurrentDirectory}/Logs/";
+    private static readonly string _logPath = $"{_logFolder}log.log";
     private readonly Thread _worker = new(() => Logger.Shared.WorkerCode());
     internal static Logger Shared { get; } = new Logger();
     private readonly List<Action> PendingIOs = new();
 
     public static WorkerStatus GetLoggerWorkerStatus()
         => Shared.LoggerStatus;
+
     public static string GetLogPath()
         => _logFolder;
+
     public static async Task LogToFile(string logText, LogLevel logLevel, dynamic invoker, Thread origin, CancellationToken token = new())
     {
         // Start Logger Worker Thread if not initialized.
@@ -46,6 +48,7 @@ internal sealed class Logger
             }, token));
         }, token).ConfigureAwait(continueOnCapturedContext: false);
     }
+
     private void WorkerCode()
     {
         // Create Logs folder if not exists
@@ -62,6 +65,7 @@ internal sealed class Logger
             //// Thread.Sleep(System.Random.Shared.Next(0, 2) * 1000);
         }
     }
+
     private void WorkerLoop()
     {
         for (int i = 0; i < PendingIOs.Count; i++)
@@ -70,19 +74,20 @@ internal sealed class Logger
             PendingIOs.RemoveAt(i);
         }
     }
+
     private static string GetLogLevel(LogLevel lvl)
     {
-        if (lvl is LogLevel.Information)
-            return "I";
-
-        if (lvl is LogLevel.Warning)
-            return "W";
-
-        if (lvl is LogLevel.Error)
-            return "E";
-
-        return (lvl is LogLevel.Verbose) ? "V" : "D";
+        return lvl switch
+        {
+            LogLevel.Information => "I",
+            LogLevel.Warning => "W",
+            LogLevel.Error => "E",
+            LogLevel.Verbose => "V",
+            LogLevel.Debug => "D",
+            _ => throw new ArgumentException("The value inserted does not match to a know LogLevel."),
+        };
     }
+
     // Private Ctor
     private Logger()
     { }
