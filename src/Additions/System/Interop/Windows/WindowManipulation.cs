@@ -8,15 +8,17 @@ internal static partial class WindowManipulation
 {
     [
         // Dynamic Link Library Import (Ext)
-        DllImport(dllName: "user32.dll", SetLastError = true),
+        DllImport(dllName: "user32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall),
         // Declare the supported platform (Windows Dll, so Windows only).
         SupportedOSPlatform("Windows")
     ]
-    static extern bool ShowWindow(IntPtr windowHandle, int windowState);
+    private static extern bool ShowWindow(IntPtr windowHandle, int windowState);
+
     [SupportedOSPlatform("Windows")]
     internal static bool ChangeWindowState(IntPtr windowHandle, WindowState windowState)
-        => ShowWindow(windowHandle, (int)windowState);
+        => ShowWindow(windowHandle, (int) windowState);
 }
+
 /// <summary>
 /// Enumeration used to set the WindowState of a window with ease
 /// </summary>
