@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Masked.Sys.Extensions;
@@ -11,6 +12,7 @@ public static class StringExt
     /// <returns>a string containing the collection of characters as a string</returns>
     public static string AssembleToString<Type>(this Type chars) where Type : IEnumerable<char>
         => string.Join("", chars);
+
     /// <summary>
     /// Removes characters from a string asynchronously
     /// </summary>
@@ -20,7 +22,7 @@ public static class StringExt
         char[] stringChars = fileName.ToCharArray();
         StringBuilder result = new();
 
-        result.Append((await Task.Factory.StartNew(
+        _ = result.Append((await Task.Factory.StartNew(
                 () =>
                 stringChars.Where(
                     x => illegalCharacters.Contains(x)
@@ -32,13 +34,14 @@ public static class StringExt
 
         return result.ToString();
     }
+
     /// <summary>
     /// Checks a string in search of characters in it.
     /// </summary>
     /// <param name="str">The string instance.</param>
     /// <param name="chars">The collection of characters that are to be checked for.</param>
     /// <returns>A True if the string contains any of the characters in the collection</returns>
-    public static async Task<bool> Contains(this string str, ICollection<char> chars)
+    public static Task<bool> Contains(this string str, ICollection<char> chars)
     {
         Task<bool> Assertion = new(() =>
         {
@@ -47,11 +50,13 @@ public static class StringExt
                 if (chars.Contains(str[i]))
                     return true;
             }
+
             return false;
         });
         Assertion.Start();
-        return await Assertion.ConfigureAwait(false);
+        return Assertion;
     }
+
     /// <summary>
     /// Checks an array of strings in search a string in it.
     /// </summary>
@@ -59,7 +64,7 @@ public static class StringExt
     /// <param name="target">The string that should be checked for.</param>
     /// <param name="comparer">The comparer that should be used when comparing the strings.</param>
     /// <returns>A True if the string[] contains the string</returns>
-    public static async Task<bool> Contains(this string[] strArr, string target, StringComparison comparer = StringComparison.CurrentCulture)
+    public static Task<bool> Contains(this string[] strArr, string target, StringComparison comparer = StringComparison.CurrentCulture)
     {
         Task<bool> Assertion = new(() =>
         {
@@ -68,16 +73,18 @@ public static class StringExt
                 if (strArr[i].Contains(target, comparer))
                     return true;
             }
+
             return false;
         });
         Assertion.Start();
-        return await Assertion.ConfigureAwait(false);
+        return Assertion;
     }
+
     /// <summary>
     /// Verify wether or not the string is a Base64 string
     /// </summary>
     /// <param name="str">String Instance</param>
     /// <returns>True if it is a Base64 string</returns>
-    public static async Task<bool> IsBase64(this string str)
-        => await Task.Run(() => Convert.TryFromBase64String(str, new(), out _)).ConfigureAwait(false);
+    public static Task<bool> IsBase64(this string str)
+        => Task.Run(() => Convert.TryFromBase64String(str, new(), out _));
 }
