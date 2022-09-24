@@ -10,13 +10,10 @@ public static class EmbedAdditions
     public static EmbedFooterBuilder GetLocalTimeFooter()
         => new() { Text = $"Local Time: {DateTime.Now}" };
 
-    public static EmbedAuthor CreateEmbedAuthor(string authorName, Uri authorIcon, Uri authorUrl)
+    public static EmbedAuthor CreateEmbedAuthor(string authorName, Uri authorIcon, Uri authorUrl) => new EmbedAuthorBuilder()
     {
-        return new EmbedAuthorBuilder()
-        {
-            Name = authorName,
-            Url = authorUrl.AbsoluteUri,
-            IconUrl = authorIcon.AbsoluteUri,
-        }.Build();
-    }
+        Name = authorName,
+        Url = authorUrl.AbsoluteUri,
+        IconUrl = authorIcon.AbsoluteUri,
+    }.Build();
 }
