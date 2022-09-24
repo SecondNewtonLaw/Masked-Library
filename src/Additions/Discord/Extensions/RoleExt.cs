@@ -1,7 +1,8 @@
 using Discord.WebSocket;
 
 namespace Masked.DiscordNet.Extensions;
-public static class RolesExt
+
+public static class RoleExt
 {
     /// <summary>
     /// Get all the strings to mention a collection of roles.
@@ -10,13 +11,12 @@ public static class RolesExt
     /// <returns>An ICollection of Type String</returns>
     public static async Task<ICollection<string>> GetMentions(this ICollection<SocketRole> roles)
     {
-        List<string> names = new();
-        await Task.Run(
-        () =>
+        string[] names = new string[roles.Count];
+        await Task.Run(() =>
         {
             for (int i = 0; i < roles.Count; i++)
             {
-                names.Add(roles.ElementAt(i).Mention);
+                names[i] = roles.ElementAt(i).Mention;
             }
         });
         return names;
