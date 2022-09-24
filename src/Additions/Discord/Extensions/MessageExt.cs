@@ -3,7 +3,7 @@ using Discord.WebSocket;
 
 namespace Masked.DiscordNet.Extensions;
 
-public static class ChannelsExt
+public static class MessageExt
 {
     /// <summary>
     /// Deletes a message in an asynchrownous manner
