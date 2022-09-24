@@ -13,21 +13,15 @@ public static class ChannelExt
     /// <exception cref="InvalidOperationException">Thrown if the Channel does not have a guild in their information</exception>
     public static SocketGuild GetGuild<T>(this T channelSocket) where T : ISocketMessageChannel
     {
-#pragma warning disable CS8600
-
         try
         {
-            if (channelSocket is not SocketGuildChannel gChan)
-            {
-                throw new InvalidOperationException($"Channel with ID {channelSocket.Id} does not point to a valid guild! Are you sure its origin is from a guiid?");
-            }
-            return gChan.Guild;
+            return channelSocket is not SocketGuildChannel gChan
+                ? throw new InvalidOperationException($"Channel with ID {channelSocket.Id} does not point to a valid guild! Are you sure its origin is from a guiid?")
+                : gChan.Guild;
         }
         catch
         {
             throw;
         }
-#pragma warning restore CS8600
-
     }
 }
