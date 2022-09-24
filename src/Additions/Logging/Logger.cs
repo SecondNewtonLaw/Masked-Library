@@ -25,35 +25,34 @@ internal sealed class Logger
     public static string GetLogPath()
         => _logFolder;
 
-    public static async Task LogToFile(string logText, LogLevel logLevel, dynamic invoker, Thread origin, CancellationToken token = new())
+    public static Task LogToFile(string logText, LogLevel logLevel, dynamic invoker, Thread origin, CancellationToken token = new())
     {
         // Start Logger Worker Thread if not initialized.
         if (Shared._worker.ThreadState is ThreadState.Unstarted)
             Shared._worker.Start();
 
-        await Task.Run(() =>
-        {
-            Shared.PendingIOs.Add(() => Task.Run(async () =>
-            {
-                // If it is a System.Object, get the type, else print it as a string.
-                dynamic inner = invoker.ToString().Contains("System.Object") ? invoker.GetType() : invoker.ToString();
+        return Task.Run(
+            () => Shared.PendingIOs.Add(
+                () => Task.Run(async () =>
+                {
+                    // If it is a System.Object, get the type, else print it as a string.
+                    dynamic inner = invoker.ToString().Contains("System.Object") ? invoker.GetType().FullName : invoker.ToString();
 
-                StreamWriter swrite = File.AppendText(_logPath);
-                await swrite.WriteLineAsync(
-                    string.Format("[Thread N{0}] [Origin: {1}] [{2}] PID: {3}: {4}", origin.ManagedThreadId, inner, GetLogLevel(logLevel), Environment.ProcessId, logText.Split('\n')[^1].ReplaceLineEndings(""))
-                ).ConfigureAwait(continueOnCapturedContext: false);
-                await swrite.FlushAsync().ConfigureAwait(continueOnCapturedContext: false);
-                swrite.Close();
-                await swrite.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
-            }, token));
-        }, token).ConfigureAwait(continueOnCapturedContext: false);
+                    StreamWriter swrite = File.AppendText(_logPath);
+                    await swrite.WriteLineAsync(
+                        string.Format("[Thread N{0}] [Origin: {1}] [{2}] PID: {3}: {4}", origin.ManagedThreadId, inner, GetLogLevel(logLevel), Environment.ProcessId, logText.Split('\n')[^1].ReplaceLineEndings(""))
+                    ).ConfigureAwait(continueOnCapturedContext: false);
+                    await swrite.FlushAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    swrite.Close();
+                    await swrite.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
+                }, token)), token);
     }
 
     private void WorkerCode()
     {
         // Create Logs folder if not exists
         if (!Directory.Exists(_logFolder))
-            Directory.CreateDirectory(_logFolder);
+            _ = Directory.CreateDirectory(_logFolder);
 
         _worker.Name = "Logger Thread";
         _worker.IsBackground = true;
@@ -75,18 +74,15 @@ internal sealed class Logger
         }
     }
 
-    private static string GetLogLevel(LogLevel lvl)
+    private static string GetLogLevel(LogLevel lvl) => lvl switch
     {
-        return lvl switch
-        {
-            LogLevel.Information => "I",
-            LogLevel.Warning => "W",
-            LogLevel.Error => "E",
-            LogLevel.Verbose => "V",
-            LogLevel.Debug => "D",
-            _ => throw new ArgumentException("The value inserted does not match to a know LogLevel."),
-        };
-    }
+        LogLevel.Information => "I",
+        LogLevel.Warning => "W",
+        LogLevel.Error => "E",
+        LogLevel.Verbose => "V",
+        LogLevel.Debug => "D",
+        _ => throw new ArgumentException("The value inserted does not match to a know LogLevel."),
+    };
 
     // Private Ctor
     private Logger()
