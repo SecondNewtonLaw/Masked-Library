@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Versioning;
+
 using Masked.Sys.Interop.Windows;
 
 namespace Masked.Sys.Windows;
@@ -21,11 +22,9 @@ public static partial class WinAPI
 
         Exception? hResultEx = System.Runtime.InteropServices.Marshal.GetExceptionForHR(System.Runtime.InteropServices.Marshal.GetLastPInvokeError());
 
-        if (hResultEx is not null)
-            throw hResultEx;
-
-        return result;
+        return hResultEx is not null ? throw hResultEx : result;
     }
+
     /// <summary>
     /// Get the window handle of the current-running process
     /// </summary>
