@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+
 using Masked.DiscordNet.Exceptions;
 using Masked.DiscordNet.Extensions;
+
 using Spectre.Console;
 
 namespace Masked.DiscordNet;
@@ -19,20 +22,23 @@ public class CommandHelper
         Commands = new List<SlashCommandProperties>();
         CommandCode = new Dictionary<string, Func<SocketSlashCommand, Task>>(StringComparer.Ordinal);
     }
+
     private readonly List<SlashCommandProperties> Commands;
     private readonly Dictionary<string, Func<SocketSlashCommand, Task>> CommandCode;
+
     /// <summary>
     /// Build all bot commands for a specific Guild (Discord Server) [RECOMMENDED FOR TESTING ONLY]
     /// </summary>
     /// <param name="guild">Socket of the Guild.</param>
-    public async Task BuildFor(SocketGuild guild)
-        => await guild.BulkOverwriteApplicationCommandAsync(Commands.ToArray()).ConfigureAwait(false);
+    public Task BuildFor(SocketGuild guild)
+        => guild.BulkOverwriteApplicationCommandAsync(Commands.ToArray());
+
     /// <summary>
     /// Build all bot commands for the whole bot | Takes two hours to apply between iterations. [RECOMMENDED FOR 'PRODUCTION-READY' BOTS]
     /// </summary>
     /// <param name="client">Bot client instance</param>
-    public async Task BuildApp(DiscordSocketClient client)
-        => await client.BulkOverwriteGlobalApplicationCommandsAsync(Commands.ToArray()).ConfigureAwait(false);
+    public Task BuildApp(DiscordSocketClient client)
+        => client.BulkOverwriteGlobalApplicationCommandsAsync(Commands.ToArray());
 
     /// <summary>
     /// Add a command to command builder
@@ -51,6 +57,7 @@ public class CommandHelper
         CommandCode.Add(cmdName, OnCommandReceived); // Add to Dictionary (Which will be iterated on a command received.)
         Commands.Add(commandProperties);
     }
+
     /// <summary>
     /// Returns a slash command handler that is able to handle all the inputted commands.
     /// </summary>
@@ -61,12 +68,13 @@ public class CommandHelper
         return async cmdSlashSocket =>
         {
             // Will check if the Dictionary contains the string of the command name, if so, it will run the Func<> it was passed.
-            if (commandCodeCopy.ContainsKey(cmdSlashSocket.Data.Name))
-                await commandCodeCopy[cmdSlashSocket.Data.Name].Invoke(cmdSlashSocket).ConfigureAwait(false);
+            if (commandCodeCopy.TryGetValue(cmdSlashSocket.Data.Name, out Func<SocketSlashCommand, Task>? commandInvokation))
+                await commandInvokation.Invoke(cmdSlashSocket).ConfigureAwait(false);
             else
                 AnsiConsole.MarkupLine("[red][[Masked.DiscordNet.CommandHelper]] [marron bold underline]Warning[/]: Command '[underline italic yellow]{cmdSlashSocket.Data.Name}[/]' does not contain a valid Command Code, are you sure you have added it to the command list of the instanciated class?[/]");
         };
     }
+
     /// <summary>
     /// Submits a command that triggers a command building for the guild the command was executed in.
     /// The Handler received from GetSlashCommandHandler() MUST be set
@@ -92,10 +100,18 @@ public class CommandHelper
             await msg.ModifyAsync(x => x.Content = "**[Dev Command]** `Commands Built.`").ConfigureAwait(false);
             // End.
         }
-        AddToCommandList(buildCommand.Build(), buildCommandLogic);
+
+        SlashCommandProperties buildCmdProps = buildCommand.Build();
+        string innerCmdName = buildCommand.Name;
+        AddToCommandList(buildCmdProps, buildCommandLogic);
 
         // Only submit IF it doesn't exist in the server already
-        if (!(await guild.GetApplicationCommandsAsync().ConfigureAwait(false)).Any(x => string.Equals(x.Name, buildCommand.Name, StringComparison.Ordinal)))
-            await guild.CreateApplicationCommandAsync(buildCommand.Build()).ConfigureAwait(false);
+        if (!(await guild.GetApplicationCommandsAsync().ConfigureAwait(false)).Any(x => string.Equals(
+            x.Name,
+            innerCmdName,
+            StringComparison.InvariantCulture)))
+        {
+            _ = await guild.CreateApplicationCommandAsync(buildCmdProps).ConfigureAwait(false);
+        }
     }
 }
