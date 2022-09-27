@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace Masked.Sys.IO.Extensions;
 
 public static class StreamExt

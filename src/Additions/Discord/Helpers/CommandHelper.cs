@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;

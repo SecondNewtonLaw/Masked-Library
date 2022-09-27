@@ -1,5 +1,3 @@
-using System;
-
 namespace Masked.Sys;
 
 /// <summary>
@@ -15,12 +13,14 @@ public static partial class Math
     /// <returns>The root of the number</returns>
     public static double CalculateRoot(ulong number, int root)
         => System.Math.Pow(number, 1.0 / root);
+
     /// <summary>
     /// Calculates the angle of a rectangle-triangle in degree angles.
     /// </summary>
     /// <returns>An approximate angle based on the Trigonometric inverse tan() function.</returns>
     public static double CalculateAngle(float opposingSide, float adyacentSide)
         => RadianToDegree(System.Math.Atan(opposingSide / adyacentSide));
+
     /// <summary>
     /// Converts radians into degree angles.
     /// </summary>
@@ -29,7 +29,7 @@ public static partial class Math
     public static double RadianToDegree(double radians)
         => radians * 57.2957795131;
 
-    // 57.2957795131 is 180*π  
+    // 57.2957795131 is 180*π
     // -> So just use a constant.
 
     /// <summary>

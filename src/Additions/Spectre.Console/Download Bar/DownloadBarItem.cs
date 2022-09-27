@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System;
 
 namespace Masked.SpectreConsole;
 
