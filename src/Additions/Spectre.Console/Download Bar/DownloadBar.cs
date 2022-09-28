@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace Masked.SpectreConsole;
 
-public class DownloadBar
+public sealed class DownloadBar
 {
     public HttpClient _internalHttpClient = null!;
     private const int chunkSize = 32768; // The size of each chunk that shall be read on each iteration every O(n)

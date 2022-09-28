@@ -4,7 +4,7 @@ using System.Runtime.Versioning;
 namespace Masked.Sys.Interop.Windows;
 
 [SupportedOSPlatform("Windows")]
-internal static partial class WindowManipulation
+internal sealed partial class WindowManipulation
 {
     [
         // Dynamic Link Library Import (Ext)

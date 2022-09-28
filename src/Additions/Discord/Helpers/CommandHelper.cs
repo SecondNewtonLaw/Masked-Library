@@ -12,7 +12,7 @@ namespace Masked.DiscordNet;
 /// <summary>
 /// A Class that assists on slash command building and handling.
 /// </summary>
-public class CommandHelper
+public sealed class CommandHelper
 {
     public CommandHelper()
     {

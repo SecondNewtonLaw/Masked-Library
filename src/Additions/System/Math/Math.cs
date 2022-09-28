@@ -3,7 +3,7 @@ namespace Masked.Sys;
 /// <summary>
 /// Provides certain mathemathical utilities
 /// </summary>
-public static partial class Math
+public sealed partial class Math
 {
     /// <summary>
     /// Calculate any root of a given number (Aproximation)

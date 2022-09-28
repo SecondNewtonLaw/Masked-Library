@@ -6,7 +6,7 @@ namespace Masked.DiscordNet.Exceptions;
 /// An Exception class meant to throw when some important data for some part of the code is missing, meaning execution can not continue.
 /// </summary>
 [Serializable]
-public class MissingDataException : Exception
+public sealed class MissingDataException : Exception
 {
     public MissingDataException()
     { }
@@ -15,8 +15,5 @@ public class MissingDataException : Exception
     { }
 
     public MissingDataException(string message, Exception inner) : base(message, inner)
-    { }
-
-    protected MissingDataException(SerializationInfo info, StreamingContext context) : base(info, context)
     { }
 }

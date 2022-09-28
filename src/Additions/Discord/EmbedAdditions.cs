@@ -2,7 +2,7 @@ using Discord;
 
 namespace Masked.DiscordNet;
 
-public static class EmbedAdditions
+public sealed class EmbedAdditions
 {
     public static EmbedFooterBuilder GetGMTFooter()
         => new() { Text = $"GMT Time: {DateTime.UtcNow}" };

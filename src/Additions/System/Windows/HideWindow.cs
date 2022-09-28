@@ -6,7 +6,7 @@ using Masked.Sys.Interop.Windows;
 namespace Masked.Sys.Windows;
 
 [SupportedOSPlatform("Windows")]
-public static partial class WinAPI
+public sealed partial class WinAPI
 {
     /// <summary>
     /// Provides functionality to change the current state a window.
