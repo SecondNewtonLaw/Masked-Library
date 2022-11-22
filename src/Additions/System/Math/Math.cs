@@ -1,3 +1,5 @@
+using SysMath = System.Math;
+
 namespace Masked.Sys;
 
 /// <summary>
@@ -12,7 +14,7 @@ public sealed partial class Math
     /// <param name="root">The root, square, cube, etc to be calculated</param>
     /// <returns>The root of the number</returns>
     public static double CalculateRoot(ulong number, int root)
-        => System.Math.Pow(number, 1.0 / root);
+        => SysMath.Pow(number, 1.0 / root);
 
     /// <summary>
     /// Calculates the angle of a rectangle-triangle in degree angles.
@@ -39,4 +41,31 @@ public sealed partial class Math
     /// <returns>The inputted degrees in radians</returns>
     public static double DegreeToRadian(double degrees)
         => degrees / 57.2957795131;
+    /// <summary>
+    /// Calculates Force.
+    /// </summary>
+    /// <param name="mass">The mass</param>
+    /// <param name="acceleration">The Acceleration</param>
+    /// <returns></returns>
+    public static double CalculateForce(double mass, double acceleration = 9.8d)
+        => mass * acceleration;
+
+    /// <summary>
+    /// Solves a quadratic equation given a, b and c.
+    /// </summary>
+    /// <param name="a">First member of the equation, no X included.</param>
+    /// <param name="b">Second member of the equation, no X included.</param>
+    /// <param name="c">Third member of the equation, no X included.</param>
+    /// <returns>An array containing as value 0 the positive result and the second the negative result.</returns>
+    public static double[] QuadraticSolve(double a, double b, double c)
+    {
+        //! Reference Equation => x = (-b (+/-) sqrt(b^2 - 4*a*c))/(2*a)
+        double negativeB = b * -1;
+        double bSquared = SysMath.Pow(b, 2);
+
+        double plusR = (negativeB + SysMath.Sqrt(bSquared - (4 * a * c))) / (2 * a);
+        double negR = (negativeB - SysMath.Sqrt(bSquared - (4 * a * c))) / (2 * a);
+
+        return new double[] { plusR, negR };
+    }
 }
