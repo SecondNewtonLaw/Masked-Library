@@ -29,7 +29,6 @@ public static class ProcessExt
     /// <param name="proc">Process Instance</param>
     /// <returns>An IEnumerable of Type <see cref="System.Diagnostics.ProcessModule"/></returns>
     /// <remarks>This process is <b>Not Deferred</b>. If you want to use the <b>Deferred</b> method, use <b><see cref="GetLoadedUnmanagedLibrariesDef(Process)"/></b>.</remarks>
-
     public static IEnumerable<ProcessModule> GetLoadedUnmanagedLibraries(this Process proc)
     {
         ProcessModule[] modules = new ProcessModule[proc.Modules.Count];
