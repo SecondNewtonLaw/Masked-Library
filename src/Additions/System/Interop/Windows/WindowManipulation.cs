@@ -6,16 +6,6 @@ namespace Masked.Sys.Interop.Windows;
 [SupportedOSPlatform("Windows")]
 internal sealed partial class WindowManipulation
 {
-#if NET7_0
-    [
-        LibraryImport(libraryName: "user32.dll", EntryPoint = "ShowWindowA", SetLastError = true),
-        // Declare the supported platform (Windows Dll, so Windows only).
-        SupportedOSPlatform("Windows")
-    ]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool ShowWindow(IntPtr windowHandle, int windowState);
-#elif NET6_0_OR_GREATER
     [
         // Dynamic Link Library Import (Ext)
         DllImport(dllName: "user32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall),
@@ -23,7 +13,6 @@ internal sealed partial class WindowManipulation
         SupportedOSPlatform("Windows")
     ]
     private static extern bool ShowWindow(IntPtr windowHandle, int windowState);
-#endif
     [SupportedOSPlatform("Windows")]
     internal static bool ChangeWindowState(IntPtr windowHandle, WindowState windowState)
         => ShowWindow(windowHandle, (int)windowState);
