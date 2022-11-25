@@ -7,25 +7,26 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace Masked.Scraper.SearchEngines;
-public class ScrapeGoogle : ISearchScrape
+
+public class GoogleScraper : ISearchScrape
 {
     private const string _xPathToLinks = "//div[@class='g']/div/div/div/a";
     private const string _xPathToTitles = "//div[@class='g']/div/div/div/a/div[@role='heading']";
-    private static readonly HtmlWeb _htmlWeb = new HtmlWeb();
+    private static readonly HtmlWeb _htmlWeb = new();
     private readonly HtmlDocument _targetDoc;
     private readonly string _query;
     /// <summary>
     /// Try to scrape results of the HTML in the specified URL
     /// </summary>
     /// <param name="website">The URL of the HTML to try to scrape results from</param>
-    public ScrapeGoogle(Uri url)
+    public GoogleScraper(Uri url)
     { _targetDoc = _htmlWeb.Load(url); _query = url.ToString(); }
 
     /// <summary>
     /// Try to scrape results of the HTML of a google page from the specified query
     /// </summary>
     /// <param name="website">The URL of the HTML to try to scrape results from</param>
-    public ScrapeGoogle(string query)
+    public GoogleScraper(string query)
     {
         const string GOOGLE_SEARCH_URL = "https://www.google.com/search";
         FormUrlEncodedContent encodedContent = new(
