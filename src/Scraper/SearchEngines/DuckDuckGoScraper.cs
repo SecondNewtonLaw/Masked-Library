@@ -5,12 +5,11 @@ using HtmlAgilityPack;
 
 namespace Masked.Scraper.SearchEngines;
 
-
 public class DuckDuckGoScraper : ISearchScrape
 {
     private const string _xPathToLinks = "//div[@id='links']/div/div/h2[@class='result__title']/a";
 
-    private static readonly HtmlWeb _htmlWeb = new HtmlWeb()
+    private static readonly HtmlWeb _htmlWeb = new()
     {
         UserAgent = Utilities.GetRandomUserAgent()
     };
