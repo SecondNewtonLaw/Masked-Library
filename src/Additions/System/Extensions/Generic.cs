@@ -1,6 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+namespace Masked.Sys.Extensions;
+
 public static class GenericExt
 {
     /// <summary>
