@@ -63,30 +63,31 @@ public class XDADevelopersScraper : ISearchScrape
             throw new NoResultsException($"No results found for \'{_query}\'");
         }
 
-        for (int i = 0; i < hnc.Count; i++)
+        hnc.FastIterator((node, index) =>
         {
-            sb.Append(_site).Append(hnc[i].Attributes["href"].Value);
+            sb.Append(_site).Append(node.Attributes["href"].Value);
 
-            if (hnc[i].InnerText.Split(';').Length > 1)
+            if (node.InnerText.Split(';').Length > 1)
             {
                 endresult.Add(new()
                 {
-                    ItemPosition = (uint)i,
+                    ItemPosition = (uint)index,
                     URL = sb.ToString(),
-                    Title = hnc[i].InnerText.Split(';')[1]
+                    Title = node.InnerText.Split(';')[1]
                 });
             }
             else
             {
                 endresult.Add(new()
                 {
-                    ItemPosition = (uint)i,
+                    ItemPosition = (uint)index,
                     URL = sb.ToString(),
-                    Title = hnc[i].InnerText
+                    Title = node.InnerText
                 });
             }
             sb.Clear();
-        }
+        });
+
         return endresult;
     }
     /// <summary>
@@ -105,30 +106,30 @@ public class XDADevelopersScraper : ISearchScrape
         {
             throw new NoResultsException($"No results found for \'{_query}\'");
         }
-        for (int i = 0; i < hnc.Count; i++)
+        hnc.FastIterator((node, index) =>
         {
-            sb.Append(_site).Append(hnc[i].Attributes["href"].Value);
+            sb.Append(_site).Append(node.Attributes["href"].Value);
 
-            if (hnc[i].InnerText.Split(';').Length > 1)
+            if (node.InnerText.Split(';').Length > 1)
             {
                 endresult.Add(new()
                 {
-                    ItemPosition = (uint)i,
+                    ItemPosition = (uint)index,
                     URL = sb.ToString(),
-                    Title = hnc[i].InnerText.Split(';')[1]
+                    Title = node.InnerText.Split(';')[1]
                 });
             }
             else
             {
                 endresult.Add(new()
                 {
-                    ItemPosition = (uint)i,
+                    ItemPosition = (uint)index,
                     URL = sb.ToString(),
-                    Title = hnc[i].InnerText
+                    Title = node.InnerText
                 });
             }
             sb.Clear();
-        }
+        });
         return endresult;
     }
 }
