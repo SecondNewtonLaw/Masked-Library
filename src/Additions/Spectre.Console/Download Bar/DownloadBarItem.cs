@@ -51,6 +51,6 @@ public struct DownloadBarItem : IEquatable<DownloadBarItem>
         int shift = RandomNumberGenerator.GetInt32(RandomNumberGenerator.GetInt32(24));
 
         hashCode = BitShift(rndVal, shift);
-        return (int) hashCode;
+        return (int)hashCode;
     }
 }

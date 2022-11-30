@@ -21,7 +21,7 @@ public sealed class DownloadBar
 
     public async Task<IDictionary<Stream, DownloadBarItem>> StartDownloadBar(IEnumerable<DownloadBarItem> urlList, CancellationToken token = default)
     {
-        int urlCount =urlList.Count();
+        int urlCount = urlList.Count();
         urlList = urlList.ToList(); // Enumerate all objects, avoids deferring.
         Dictionary<HttpResponseMessage, DownloadBarItem> streamTracker = new(urlCount);
 
