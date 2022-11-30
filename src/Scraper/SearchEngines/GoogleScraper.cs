@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,14 +63,21 @@ public class GoogleScraper : ISearchScrape
         {
             throw new NoResultsException($"No results found for \'{_query}\'");
         }
-
-        for (int i = 0; i < hnc_links.Count; i++)
+        ReadOnlySpan<HtmlNode> titlesSpan = CollectionsMarshal.AsSpan(hnc_title.ToList());
+        ref var searchSpace = ref MemoryMarshal.GetReference(titlesSpan);
+        unsafe
         {
-            endresult.Add(new()
+            void* ptr = Unsafe.AsPointer(ref searchSpace);
+            hnc_links.FastIterator((node, index) =>
             {
-                ItemPosition = (uint)i,
-                URL = hnc_links[i].Attributes["href"].Value,
-                Title = hnc_title[i].InnerText
+                var title = Unsafe.Add(ref Unsafe.AsRef<HtmlNode>(ptr), index);
+
+                endresult.Add(new()
+                {
+                    ItemPosition = (uint)index,
+                    URL = node.Attributes["href"].Value,
+                    Title = title.InnerText
+                });
             });
         }
         return endresult;
@@ -98,19 +107,15 @@ public class GoogleScraper : ISearchScrape
         HtmlNodeCollection hnc_title = taskResult[0];
         HtmlNodeCollection hnc_links = taskResult[1];
 
-        for (int i = 0; i < hnc_links.Count; i++)
+        hnc_links.FastIterator((node, index) =>
         {
-            try
+            endresult.Add(new()
             {
-                endresult.Add(new()
-                {
-                    ItemPosition = (uint)i,
-                    URL = hnc_links[i].Attributes["href"].Value,
-                    Title = hnc_title[i].InnerText
-                });
-            }
-            catch { }
-        }
+                ItemPosition = (uint)index,
+                URL = node.Attributes["href"].Value,
+                Title = hnc_title[index].InnerText
+            });
+        });
         return endresult;
     }
 }
