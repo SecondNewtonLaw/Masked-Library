@@ -8,7 +8,7 @@ namespace Masked.Scraper;
 
 internal static class Utilities
 {
-    private static readonly Dictionary<string, string> urlText = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> urlText = new()
     {
         ["%3A"] = ":",
         ["%2F"] = "/",
@@ -18,7 +18,7 @@ internal static class Utilities
         ["%3D"] = "=",
         ["%2B"] = "+"
     };
-    private static readonly Dictionary<string, string> fixUpChars = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> fixUpChars = new()
     {
         ["&#xE1;"] = "á",
         ["&#xE9;"] = "é",
