@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
+using Masked.Sys.Extensions;
 
 namespace Masked.Scraper.SearchEngines;
 

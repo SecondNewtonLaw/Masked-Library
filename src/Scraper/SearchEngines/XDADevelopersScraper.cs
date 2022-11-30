@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Masked.Scraper;
+using Masked.Sys.Extensions;
 
 namespace Masked.Scraper.SearchEngines;
 public class XDADevelopersScraper : ISearchScrape
