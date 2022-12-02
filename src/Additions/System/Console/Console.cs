@@ -5,7 +5,7 @@ namespace Masked.Sys;
 /// <summary>
 /// A Class used to help and extend the usage of the Default Console class.
 /// </summary>
-public class ConsoleExtended
+public static class ConsoleExtended
 {
     /// <summary>
     /// When the user attempts to interrupt the Program's execution, the handler given to this method will be executed.
