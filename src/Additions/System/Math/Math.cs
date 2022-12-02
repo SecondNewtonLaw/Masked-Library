@@ -21,7 +21,7 @@ public sealed partial class Math
     /// </summary>
     /// <returns>An approximate angle based on the Trigonometric inverse tan() function.</returns>
     public static double CalculateAngle(float opposingSide, float adyacentSide)
-        => RadianToDegree(System.Math.Atan(opposingSide / adyacentSide));
+        => RadianToDegree(SysMath.Atan(opposingSide / adyacentSide));
 
     /// <summary>
     /// Converts radians into degree angles.
