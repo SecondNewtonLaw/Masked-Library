@@ -1,3 +1,5 @@
+using Masked.Sys.Extensions;
+
 namespace Masked.Sys.IO.Extensions;
 
 public static class StreamExt
@@ -6,21 +8,23 @@ public static class StreamExt
     /// Flushes, Disposes and closes a collection of <see cref="ICollection"/> streams.
     /// </summary>
     /// <param name="inStreams">Streams to destroy</param>
-    public static async Task DestroyStreamsAsync(this ICollection<Stream> inStreams, TaskScheduler? sched = null, CancellationToken tken = default)
+    public static async Task DestroyStreamsAsync(this IEnumerable<Stream> inStreams, TaskScheduler? sched = null, CancellationToken tken = default)
     {
         sched ??= TaskScheduler.Current;
 
-        List<Task> taskList = new(inStreams.Count);
-        for (int i = 0; i < inStreams.Count; i++)
+        List<Stream> enumerated = inStreams.ToList();
+        List<Task> taskList = new(enumerated.Count);
+
+        enumerated.FastIterator((stream, index) =>
         {
-            int i2 = i;
+            int i2 = index;
             taskList.Add(Task.Factory.StartNew(async () =>
             {
-                await inStreams.ElementAt(i2).FlushAsync();
-                await inStreams.ElementAt(i2).DisposeAsync();
-                inStreams.ElementAt(i2).Close();
+                await stream.FlushAsync();
+                await stream.DisposeAsync();
+                stream.Close();
             }, tken, TaskCreationOptions.HideScheduler, sched));
-        }
+        });
 
         while (taskList.Count > 0)
         {
