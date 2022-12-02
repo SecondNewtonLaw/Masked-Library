@@ -17,7 +17,7 @@ public sealed partial class WinAPI
     [SupportedOSPlatform("Windows")]
     public static bool SetWindowState(IntPtr windowHandle, WindowState windowState)
     {
-        bool result = Masked.Sys.Interop.Windows.WindowManipulation.ChangeWindowState(windowHandle, windowState);
+        bool result = WindowManipulation.ChangeWindowState(windowHandle, windowState);
 
         Exception? hResultEx = System.Runtime.InteropServices.Marshal.GetExceptionForHR(System.Runtime.InteropServices.Marshal.GetLastPInvokeError());
 
