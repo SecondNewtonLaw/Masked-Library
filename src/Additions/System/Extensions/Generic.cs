@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
+using Unsafe = System.Runtime.CompilerServices.Unsafe;
 namespace Masked.Sys.Extensions;
 
 public static class GenericExt
