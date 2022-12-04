@@ -7,7 +7,7 @@ using SysUnsafe = System.Runtime.CompilerServices.Unsafe;
 
 namespace Masked.Sys.Dangerous.Unsafe;
 /// <summary>
-/// This class is not meant for real consumption, just to play with C#'s Unsafe functionality.
+/// This class is not meant for real consumption, just to play with C#'s Unsafe functionality, due to this, it's <b>Undocumented</b>.
 /// </summary>
 public partial class MemoryUnsafe
 {

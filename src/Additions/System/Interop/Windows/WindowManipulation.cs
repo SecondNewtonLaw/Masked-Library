@@ -35,16 +35,52 @@ internal sealed partial class WindowManipulation
 /// </summary>
 public enum WindowState
 {
+    /// <summary>
+    /// Indicates that the window will be hidden.
+    /// </summary>
     Hide = 0,
+    /// <summary>
+    /// Indicates that the window will be shown as normal.
+    /// </summary>
     Normal = 1,
+    /// <summary>
+    /// Indicates that the window will show minimized.
+    /// </summary>
     ShowMinimized = 2,
+    /// <summary>
+    /// Indicates that the window will show maximized.
+    /// </summary>
     ShowMaximized = 3,
+    /// <summary>
+    /// Check Microsoft Documentation.
+    /// </summary>
     ShowNoActivate = 4,
+    /// <summary>
+    /// Indicates that the window will be shown.
+    /// </summary>
     Show = 5,
+    /// <summary>
+    /// Indicates that the window will be minimized.
+    /// </summary>
     Minimize = 6,
+    /// <summary>
+    /// Check Microsoft Documentation.
+    /// </summary>
     ShowMinNoActive = 7,
+    /// <summary>
+    /// Check Microsoft Documentation.
+    /// </summary>
     ShowNA = 8,
+    /// <summary>
+    /// Indicates that the window will be restored to the previous state.
+    /// </summary>
     Restore = 9,
+    /// <summary>
+    /// Indicates that the window will be shown as it is set by default.
+    /// </summary>
     ShowDefault = 10,
+    /// <summary>
+    /// Indicates that the window will be forcefully minimized.
+    /// </summary>
     ForceMinimize = 11,
 }

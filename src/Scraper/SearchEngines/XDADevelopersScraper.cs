@@ -23,6 +23,7 @@ public class XDADevelopersScraper : ISearchScrape
     /// Try to scrape results of the HTML in the specified URL
     /// </summary>
     /// <param name="keywords">The URL of the HTML to try to scrape results from</param>
+    /// <param name="searchOrder">How should the search results be ordered?</param>
     public XDADevelopersScraper(string keywords, XDASearchOrder searchOrder)
     {
         var url = new StringBuilder();
@@ -87,6 +88,7 @@ public class XDADevelopersScraper : ISearchScrape
                 });
             }
             sb.Clear();
+            return NextStep.Continue;
         });
 
         return endresult;
@@ -130,12 +132,22 @@ public class XDADevelopersScraper : ISearchScrape
                 });
             }
             sb.Clear();
+            return NextStep.Continue;
         });
         return endresult;
     }
 }
+/// <summary>
+/// The search order used by the official XDA Forums website.
+/// </summary>
 public enum XDASearchOrder
 {
+    /// <summary>
+    /// The items will be sorted by relevance.
+    /// </summary>
     Relevance,
+    /// <summary>
+    /// The items will be sorted by Date of appearance.
+    /// </summary>
     Date
 }

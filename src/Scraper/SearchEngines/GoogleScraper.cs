@@ -21,14 +21,14 @@ public class GoogleScraper : ISearchScrape
     /// <summary>
     /// Try to scrape results of the HTML in the specified URL
     /// </summary>
-    /// <param name="website">The URL of the HTML to try to scrape results from</param>
+    /// <param name="url">The URL of the HTML to try to scrape results from</param>
     public GoogleScraper(Uri url)
     { _targetDoc = _htmlWeb.Load(url); _query = url.ToString(); }
 
     /// <summary>
     /// Try to scrape results of the HTML of a google page from the specified query
     /// </summary>
-    /// <param name="website">The URL of the HTML to try to scrape results from</param>
+    /// <param name="query">The query that will be processed into a Google URL.</param>
     public GoogleScraper(string query)
     {
         const string GOOGLE_SEARCH_URL = "https://www.google.com/search";
@@ -79,6 +79,7 @@ public class GoogleScraper : ISearchScrape
                     URL = node.Attributes["href"].Value,
                     Title = title.InnerText
                 });
+                return NextStep.Continue;
             });
         }
         return endresult;
@@ -116,6 +117,7 @@ public class GoogleScraper : ISearchScrape
                 URL = node.Attributes["href"].Value,
                 Title = hnc_title[index].InnerText
             });
+            return NextStep.Continue;
         });
         return endresult;
     }

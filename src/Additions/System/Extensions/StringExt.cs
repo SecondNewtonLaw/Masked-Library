@@ -2,6 +2,9 @@ using System.Text;
 
 namespace Masked.Sys.Extensions;
 
+/// <summary>
+/// Extensions for the string class.
+/// </summary>
 public static class StringExt
 {
     /// <summary>
