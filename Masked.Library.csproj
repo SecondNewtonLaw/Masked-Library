@@ -15,7 +15,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
 
   </PropertyGroup>
 

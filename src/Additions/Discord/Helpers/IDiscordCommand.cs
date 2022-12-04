@@ -13,10 +13,10 @@ public interface IDiscordCommand
     /// </summary>
     /// <param name="commandSocket">The socket used to interact with the Discord Interaction.</param>
     /// <returns>A Task representing the on-going asynchronous operation.</returns>
-    public abstract Task Run(SocketSlashCommand commandSocket);
+    public static abstract Task Run(SocketSlashCommand commandSocket);
     /// <summary>
     /// Method used to Build the properties of the Slash Command, which are sent to Discord.
     /// </summary>
     /// <returns>The Properties of the Slash Command.</returns>
-    public abstract SlashCommandProperties Build();
+    public static abstract SlashCommandProperties Build();
 }
