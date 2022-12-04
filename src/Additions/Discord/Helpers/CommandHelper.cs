@@ -43,8 +43,28 @@ public sealed class CommandHelper
     /// <param name="commandProperties">THe properties of the command</param>
     /// <param name="OnCommandReceived">What to do when the command is received by the bot</param>
     /// <exception cref="MissingDataException">Thrown if the Properties of the Slash Command is missing it's Name, making it unable to be identified when received</exception>
+    [Obsolete("This method is obsolete, please use the AddCommandToList(IDiscordCommand) method overload instead.")]
     public void AddToCommandList(SlashCommandProperties commandProperties, Func<SocketSlashCommand, Task> OnCommandReceived)
     {
+        // Throw error if the command has no name to pick it from.
+        if (!commandProperties.Name.IsSpecified)
+            throw new MissingDataException("Can not process a command if it has no name!");
+
+        string cmdName = commandProperties.Name.Value;
+
+        CommandCode.Add(cmdName, OnCommandReceived); // Add to Dictionary (Which will be iterated on a command received.)
+        Commands.Add(commandProperties);
+    }
+    /// <summary>
+    /// Add a command to command builder
+    /// </summary>
+    /// <param name="command">A class that implements the <see cref="IDiscordCommand"/> interface.</param>
+    /// <exception cref="MissingDataException">Thrown if the Properties of the Slash Command is missing it's Name, making it unable to be identified when received</exception>
+    public void AddToCommandList(IDiscordCommand command)
+    {
+        SlashCommandProperties commandProperties = command.Build();
+        async Task OnCommandReceived(SocketSlashCommand sock) => await command.Run(sock);
+
         // Throw error if the command has no name to pick it from.
         if (!commandProperties.Name.IsSpecified)
             throw new MissingDataException("Can not process a command if it has no name!");
@@ -100,6 +120,7 @@ public sealed class CommandHelper
 
         SlashCommandProperties buildCmdProps = buildCommand.Build();
         string innerCmdName = buildCommand.Name;
+        // Ignore obsolesence. too lazy to move to new code.
         AddToCommandList(buildCmdProps, buildCommandLogic);
 
         // Only submit IF it doesn't exist in the server already
@@ -110,5 +131,21 @@ public sealed class CommandHelper
         {
             _ = await guild.CreateApplicationCommandAsync(buildCmdProps).ConfigureAwait(false);
         }
+    }
+    /// <summary>
+    /// Submits the SlashCommandProperties that are managed by this class instance to the Discord API.
+    /// </summary>
+    /// <param name="client">The Discord Client that will be used to submit the commands.</param>
+    /// <remarks>This method will ALSO assign the SlashCommandHandler required for this operation after the Commands have been submitted.</remarks>
+    /// <returns>A Task representing the on-going asynchronous operation.</returns>
+    public async Task SubmitCommands(DiscordSocketClient client)
+    {
+        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italics]Building [bold green underline]Application Commands[/] for [maroon underline]Discord Client[/] with signed user [maroon bold]{client.CurrentUser.Username}[/] [green italics]({client.CurrentUser.Id})[/]");
+
+        await client.BulkOverwriteGlobalApplicationCommandsAsync(Commands.ToArray());
+
+        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italics]SlashCommandHandler [bold green underline]Loaded[/] for [maroon underline]Discord Client[/] with signed user [maroon bold]{client.CurrentUser.Username}[/] [green italics]({client.CurrentUser.Id})[/]");
+        var closure = GetSlashCommandHandler();
+        client.SlashCommandExecuted += async cmd => await closure?.Invoke(cmd)!;
     }
 }
