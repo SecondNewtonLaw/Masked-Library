@@ -6,15 +6,7 @@ namespace Masked.Sys.Interop.Windows;
 [SupportedOSPlatform("Windows")]
 internal sealed partial class WindowManipulation
 {
-#if NET_6_0 // Use OLD P/Invoke
-    [
-        // Dynamic Link Library Import (Ext)
-        DllImport(dllName: "user32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall),
-        // Declare the supported platform (Windows Dll, so Windows only).
-        SupportedOSPlatform("Windows")
-    ]
-    private static extern bool ShowWindow(IntPtr windowHandle, int windowState);
-#elif NET7_0_OR_GREATER // Use NEW P/Invoke
+#if NET7_0 // Use NEW P/Invoke
     [
         // Source Generator making P/Invoke magic.
         LibraryImport(libraryName: "user32.dll", SetLastError = true),
@@ -24,6 +16,14 @@ internal sealed partial class WindowManipulation
     [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool ShowWindow(IntPtr windowHandle, int windowState);
+#else // Use OLD P/Invoke
+    [
+        // Dynamic Link Library Import (Ext)
+        DllImport(dllName: "user32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall),
+        // Declare the supported platform (Windows Dll, so Windows only).
+        SupportedOSPlatform("Windows")
+    ]
+    private static extern bool ShowWindow(IntPtr windowHandle, int windowState);
 #endif
     [SupportedOSPlatform("Windows")]
     internal static bool ChangeWindowState(IntPtr windowHandle, WindowState windowState)
