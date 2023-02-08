@@ -13,8 +13,8 @@ namespace Masked.Scraper.SearchEngines;
 
 public class GoogleScraper : ISearchScrape
 {
-    private const string _xPathToLinks = "//div[@class='g']/div/div/div/a";
-    private const string _xPathToTitles = "//div[@class='g']/div/div/div/a/div[@role='heading']";
+    private const string _xPathToLinks = "//div[@class=\"yuRUbf\"]/a";
+    private const string _xPathToTitles = "//h3[@class=\"LC20lb MBeuO DKV0Md\"]";
     private static readonly HtmlWeb _htmlWeb = new();
     private readonly HtmlDocument _targetDoc;
     private readonly string _query;
