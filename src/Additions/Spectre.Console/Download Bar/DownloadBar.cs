@@ -7,8 +7,8 @@ namespace Masked.SpectreConsole;
 
 public sealed class DownloadBar
 {
-    public HttpClient _internalHttpClient = null!;
-    private const int chunkSize = 32768; // The size of each chunk that shall be read on each iteration every O(n)
+    public HttpClient _internalHttpClient;
+    private const int chunkSize = 32768;
 
     public DownloadBar() => _internalHttpClient = new(new HttpClientHandler()
     {
@@ -21,8 +21,8 @@ public sealed class DownloadBar
 
     public async Task<IDictionary<Stream, DownloadBarItem>> StartDownloadBar(IEnumerable<DownloadBarItem> urlList, CancellationToken token = default)
     {
+        urlList = urlList.ToList(); // Enumerate all objects, avoids possible multiple enumeration.
         int urlCount = urlList.Count();
-        urlList = urlList.ToList(); // Enumerate all objects, avoids deferring.
         Dictionary<HttpResponseMessage, DownloadBarItem> streamTracker = new(urlCount);
 
         for (int i = 0; urlList.Skip(i).Any(); i++)
