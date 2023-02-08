@@ -1,4 +1,6 @@
 using System.Security.Cryptography;
+using System.Text;
+using Masked.Sys.Extensions;
 
 namespace Masked.SpectreConsole;
 
@@ -33,24 +35,22 @@ public struct DownloadBarItem : IEquatable<DownloadBarItem>
     /// <returns>A Randomly generated hash that is consistent through calls of the method.</returns>
     public override int GetHashCode()
     {
-        // The HashCode must remain consistent.
         if (hashCode.HasValue)
             return hashCode.Value;
+        int dataVal = 0;
+        var initial = ItemName.Length + SavePath.Length - Url.OriginalString.Length;
 
-        static int BitShift(int value, int positions)
+        byte[] data = Encoding.UTF8.GetBytes(ItemName[0..4]).Concat(Encoding.UTF8.GetBytes(Url.OriginalString[0..4])).Concat(Encoding.UTF8.GetBytes(SavePath[0..4])).ToArray();
+        
+        data.FastIterator((data, indx) =>
         {
-            // Save the existing bit pattern, but interpret it as an unsigned integer.
-            uint number = BitConverter.ToUInt32(BitConverter.GetBytes(value), 0);
-            // Preserve the bits to be discarded.
-            uint wrapped = number >> (32 - positions);
-            // Shift and wrap the discarded bits.
-            return BitConverter.ToInt32(BitConverter.GetBytes((number << positions) | wrapped), 0);
-        }
-
-        int rndVal = RandomNumberGenerator.GetInt32(RandomNumberGenerator.GetInt32(913672193));
-        int shift = RandomNumberGenerator.GetInt32(RandomNumberGenerator.GetInt32(24));
-
-        hashCode = BitShift(rndVal, shift);
-        return (int)hashCode;
+            checked
+            {
+                dataVal += indx % 2 is 0 ? data.GetHashCode() : -data.GetHashCode();
+            }
+            return NextStep.Continue;
+        });
+        hashCode = dataVal;
+        return hashCode.Value;
     }
 }
