@@ -9,7 +9,7 @@ internal sealed class Logger
     private static readonly string _logFolder = $"{Environment.CurrentDirectory}/Logs/";
     private static readonly string _logPath = $"{_logFolder}log.log";
     private readonly Thread _worker = new(() => Logger.Shared.WorkerCode());
-    internal static Logger Shared { get; } = new Logger();
+    internal static Logger Shared { get; } = new();
     private readonly List<Action> PendingIOs = new();
 
     public static WorkerStatus GetLoggerWorkerStatus()
@@ -33,7 +33,7 @@ internal sealed class Logger
 
                     StreamWriter swrite = File.AppendText(_logPath);
                     await swrite.WriteLineAsync(
-                        string.Format("[Thread N{0}] [Origin: {1}] [{2}] PID: {3}: {4}", origin.ManagedThreadId, inner, GetLogLevel(logLevel), Environment.ProcessId, logText.Split('\n')[^1].ReplaceLineEndings(""))
+                        $"[Thread N{origin.ManagedThreadId}] [Origin: {inner}] [{GetLogLevel(logLevel)}] PID: {Environment.ProcessId}: {logText.Split('\n')[^1].ReplaceLineEndings("")}"
                     ).ConfigureAwait(continueOnCapturedContext: false);
                     await swrite.FlushAsync().ConfigureAwait(continueOnCapturedContext: false);
                     swrite.Close();
