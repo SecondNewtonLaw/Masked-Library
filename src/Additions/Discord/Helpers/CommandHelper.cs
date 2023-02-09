@@ -140,11 +140,11 @@ public sealed class CommandHelper
     /// <returns>A Task representing the on-going asynchronous operation.</returns>
     public async Task SubmitCommands(DiscordSocketClient client)
     {
-        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italics]Building [bold green underline]Application Commands[/] for [maroon underline]Discord Client[/] with signed user [maroon bold]{client.CurrentUser.Username}[/] [green italics]({client.CurrentUser.Id})[/]");
+        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italic]Building [bold green underline]Application Commands[/] for [maroon underline]Discord Client[/] with signed user [red bold]{client.CurrentUser.Username}[/] [green italic]({client.CurrentUser.Id})[/]");
 
         await client.BulkOverwriteGlobalApplicationCommandsAsync(Commands.ToArray());
 
-        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italics]SlashCommandHandler [bold green underline]Loaded[/] for [maroon underline]Discord Client[/] with signed user [maroon bold]{client.CurrentUser.Username}[/] [green italics]({client.CurrentUser.Id})[/]");
+        AnsiConsole.MarkupLine($"[red][[Masked.Library]][/] [yellow italic]SlashCommandHandler [bold green underline]Loaded[/] for [maroon underline]Discord Client[/] with signed user [red bold]{client.CurrentUser.Username}[/] [green italic]({client.CurrentUser.Id})[/]");
         var closure = GetSlashCommandHandler();
         client.SlashCommandExecuted += async cmd => await closure?.Invoke(cmd)!;
     }
