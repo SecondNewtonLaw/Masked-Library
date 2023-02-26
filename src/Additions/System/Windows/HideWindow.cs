@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
-
 using Masked.Sys.Interop.Windows;
 
 namespace Masked.Sys.Windows;
@@ -9,8 +8,7 @@ namespace Masked.Sys.Windows;
 /// An easy to use class that allows you to interact with the Win32 API in an easy manner.
 /// </summary>
 [SupportedOSPlatform("Windows")]
-public sealed partial class WinAPI
-{
+public sealed partial class WinAPI {
     /// <summary>
     /// Provides functionality to change the current state a window.
     /// </summary>
@@ -18,11 +16,12 @@ public sealed partial class WinAPI
     /// <param name="windowState">The enumeration of WindowState declaring the state of the Window</param>
     /// <returns>True if the operation was a success, false if it was not, and an exception if an error occured during the P/Invoke operation.</returns>
     [SupportedOSPlatform("Windows")]
-    public static bool SetWindowState(IntPtr windowHandle, WindowState windowState)
-    {
-        bool result = WindowManipulation.ChangeWindowState(windowHandle, windowState);
+    public static bool SetWindowState(nint windowHandle, WindowState windowState) {
+        var result = WindowManipulation.ChangeWindowState(windowHandle, windowState);
 
-        Exception? hResultEx = System.Runtime.InteropServices.Marshal.GetExceptionForHR(System.Runtime.InteropServices.Marshal.GetLastPInvokeError());
+        var hResultEx =
+            System.Runtime.InteropServices.Marshal.GetExceptionForHR(System.Runtime.InteropServices.Marshal
+                .GetLastPInvokeError());
 
         return hResultEx is not null ? throw hResultEx : result;
     }
@@ -31,6 +30,7 @@ public sealed partial class WinAPI
     /// Get the window handle of the current-running process
     /// </summary>
     /// <returns></returns>
-    public static IntPtr GetWindowHandle()
-        => Process.GetCurrentProcess().MainWindowHandle;
+    public static nint GetWindowHandle() {
+        return Process.GetCurrentProcess().MainWindowHandle;
+    }
 }

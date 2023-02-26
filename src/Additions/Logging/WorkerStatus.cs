@@ -1,8 +1,7 @@
 namespace Masked.Logging;
 
-public enum WorkerStatus
-{
+public enum WorkerStatus {
     Working,
     Crashed,
-    Idle,
+    Idle
 }

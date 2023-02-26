@@ -1,6 +1,7 @@
 ﻿# Masked Library
 
-Masked Library is a C# Library that uses Extension methods and integrates classes that help .NET developers develop applications quicker.
+Masked Library is a C# Library that uses Extension methods and integrates classes that help .NET developers develop
+applications quicker.
 
 This project has Extension method for packages such as **Discord.Net** and **Spectre.Console**.
 
