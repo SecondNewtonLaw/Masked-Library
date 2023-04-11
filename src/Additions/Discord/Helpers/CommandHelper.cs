@@ -87,8 +87,8 @@ public sealed class CommandHelper {
         return async cmdSlashSocket => {
             // Will check if the Dictionary contains the string of the command name, if so, it will run the Func<> it was passed.
             if (commandCodeCopy.TryGetValue(cmdSlashSocket.Data.Name,
-                    out Func<SocketSlashCommand, Task>? commandInvokation))
-                await commandInvokation.Invoke(cmdSlashSocket).ConfigureAwait(false);
+                    out var commandInvocation))
+                await commandInvocation.Invoke(cmdSlashSocket).ConfigureAwait(false);
             else
                 AnsiConsole.MarkupLine(
                     "[red][[Masked.DiscordNet.CommandHelper]] [marron bold underline]Warning[/]: Command '[underline italic yellow]{cmdSlashSocket.Data.Name}[/]' does not contain a valid Command Code, are you sure you have added it to the command list of the instanciated class?[/]");
@@ -121,8 +121,10 @@ public sealed class CommandHelper {
 
         var buildCmdProps = buildCommand.Build();
         var innerCmdName = buildCommand.Name;
-        // Ignore obsolesence. too lazy to move to new code.
-        AddToCommandList(buildCmdProps, buildCommandLogic);
+        
+        if (!Commands.Contains(buildCmdProps))
+            // Ignore obsolescence. too lazy to move to new code.
+            AddToCommandList(buildCmdProps, buildCommandLogic);
 
         // Only submit IF it doesn't exist in the server already
         if (!(await guild.GetApplicationCommandsAsync().ConfigureAwait(false)).Any(x => string.Equals(
