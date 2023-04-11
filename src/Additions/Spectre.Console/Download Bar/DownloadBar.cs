@@ -58,8 +58,8 @@ public sealed class DownloadBar {
                         );
 
                     Thread thread = new(() =>
-                        ProgressUpdateCode(currIterator, contentLength, progTasks, FinalizedDownloads, streamTracker,
-                            urlList, token).GetAwaiter().GetResult());
+                        ProgressUpdateCode(currIterator, contentLength, progTasks[i], FinalizedDownloads, streamTracker.ElementAt(i),
+                            urlList.ElementAt(i), token).GetAwaiter().GetResult());
                     thread.Start();
                     threadList[i] = thread;
                 }
@@ -80,14 +80,14 @@ public sealed class DownloadBar {
     private static async Task ProgressUpdateCode(
         int index,
         double lengthOfContent,
-        ProgressTask[] tasksTracker,
+        ProgressTask trackedTask,
         Dictionary<Stream, DownloadBarItem> FinalizedDownloads,
-        Dictionary<HttpResponseMessage, DownloadBarItem> streamTracker,
-        IEnumerable<DownloadBarItem> urlList,
+        KeyValuePair<HttpResponseMessage, DownloadBarItem> streamTracker,
+        DownloadBarItem item,
         CancellationToken token) {
         var httpStream =
-            await streamTracker.ElementAt(index).Key.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
-        var finished = File.Create(streamTracker.ElementAt(index).Value.SavePath);
+            await streamTracker.Key.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+        var finished = File.Create(streamTracker.Value.SavePath);
         int readData = 0, lastRead;
         var buffer = new byte[chunkSize];
 
@@ -95,14 +95,16 @@ public sealed class DownloadBar {
             lastRead = await httpStream.ReadAsync(buffer.AsMemory(0, chunkSize), token).ConfigureAwait(false);
 
             await finished.WriteAsync(buffer.AsMemory(0, lastRead), token).ConfigureAwait(false);
-
+            
             readData += lastRead;
 
-            tasksTracker[index].Value = readData;
+            trackedTask.Value = readData;
         } while (readData < lengthOfContent);
 
         await finished.FlushAsync(token).ConfigureAwait(false); // Save all data to file
 
-        FinalizedDownloads.Add(finished, urlList.ElementAt(index));
+        await finished.DisposeAsync();
+        
+        FinalizedDownloads.Add(finished, item);
     }
 }
