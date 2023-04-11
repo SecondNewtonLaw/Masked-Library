@@ -15,15 +15,15 @@
         <NeutralLanguage>en-US</NeutralLanguage>
         <IncludeSymbols>True</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Version>1.4.5</Version>
+        <Version>1.4.6</Version>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Discord.Net" Version="3.8.1"/>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.46"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="Spectre.Console" Version="0.45.0"/>
+        <PackageReference Include="Discord.Net" Version="3.10.0" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Spectre.Console" Version="0.45.0" />
     </ItemGroup>
 
 </Project>
