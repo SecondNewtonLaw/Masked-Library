@@ -3,18 +3,21 @@ namespace Masked.Logging;
 /// <summary>
 /// Class that provides logging utilities.
 /// </summary>
+[Obsolete("Do not use. This class is obsolete and will be removed in a future version due to it being virtually useless and badly written.")]
 internal sealed class Logger {
     private WorkerStatus LoggerStatus;
     private static readonly string _logFolder = $"{Environment.CurrentDirectory}/Logs/";
     private static readonly string _logPath = $"{_logFolder}log.log";
     private readonly Thread _worker = new(() => Shared.WorkerCode());
-    internal static Logger Shared { get; } = new();
+    public static Logger Shared { get; } = new();
     private readonly List<Action> PendingIOs = new();
 
     public static WorkerStatus GetLoggerWorkerStatus() {
-        return Shared.LoggerStatus;
+        lock (Shared) {
+            return Shared.LoggerStatus;
+        };
     }
-
+    
     public static string GetLogPath() {
         return _logFolder;
     }
@@ -72,7 +75,7 @@ internal sealed class Logger {
             LogLevel.Error => "E",
             LogLevel.Verbose => "V",
             LogLevel.Debug => "D",
-            _ => throw new ArgumentException("The value inserted does not match to a know LogLevel.")
+            _ => throw new ArgumentException("The value inserted does not match to a known LogLevel.")
         };
     }
 
